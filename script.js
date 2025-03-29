@@ -93,12 +93,22 @@ function addToCart(productId) {
 
     updateCart();
 
+    // Create message container
     const message = document.createElement('div');
-    message.textContent = `${product.name} added to cart🛒`;
-    message.style = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); padding:10px; background: orange; color:white; border-radius:5px; z-index:1000;';
+    message.innerHTML = `${product.name} added to cart 🛒 
+        <button id="goToCartBtn" style="margin-left:10px; padding:5px 10px; border:none; background:#fff; color:#000; border-radius:5px; cursor:pointer;">Go to Cart</button>`;
+    
+    message.style = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); padding:10px; background: orange; color:white; border-radius:5px; z-index:1000; display:flex; align-items:center;';
+
     document.body.appendChild(message);
 
-    setTimeout(() => message.remove(), 3000);
+    // Add event listener to Go to Cart button
+    document.getElementById('goToCartBtn').addEventListener('click', () => {
+        window.location.href = "cart.html"; // Redirects to cart page
+    });
+
+    // Automatically remove the message after 1 second
+    setTimeout(() => message.remove(), 2000);
 }
 
 
@@ -110,18 +120,34 @@ function clearCart() {
     updateCart();
 }
 
-//Function to Buy Now
 function buyNow() {
     if (cart.length === 0) {
-        alert("Your cart is empty! Add some products before purchasing.");
+        showTemporaryMessage("Your cart is empty! Add some products before purchasing.", "error");
         return;
     }
+        showTemporaryMessage("Thank you for your purchase! Your order has been placed.", "success");
 
-    alert("Thank you for your purchase! Your order has been placed.");
-    
-    // Simulate order processing (You can integrate payment gateway here)
-    clearCart(); // Clear cart after successful purchase
+    // Simulate order processing (You can integrate a payment gateway here)
+    clearCart(); // Clear cart after a successful purchase
+    setTimeout(() => {
+        window.location.href = "order-confirmation.html";
+    }, 3000); // Redirect after 3 seconds
 }
+
+// Function to show a temporary message
+function showTemporaryMessage(message, type) {
+    let messageBox = document.createElement("div");
+    messageBox.innerText = message;
+    messageBox.className = `message-box ${type}`;
+    document.body.appendChild(messageBox);
+
+    // Automatically remove message after 3 seconds
+    setTimeout(() => {
+        messageBox.remove();
+    }, 2000);
+}
+
+
 
 // Load cart items on page load
 document.addEventListener("DOMContentLoaded", displayCart);
@@ -159,3 +185,4 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCart();
     displayAdvertisement();
 });
+
